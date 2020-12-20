@@ -1,0 +1,141 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script src="script.js"></script>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<div ng-app="myApp" ng-controller="myController">
+
+<div class="wrapper">
+
+<div class="container">
+	<div class="left">
+		<div class="top">
+
+			
+			<img ng-click="showProfile=true" src="{{profile.profile_pic_url}}" style="border-radius: 50%;" alt="profile pic">	
+			<span class="username">{{profile.username}}</span>
+			<hr style="color:#eceff1;opacity:0.6">
+			<input type="text" placeholder="Search" ng-model="friendName">
+			
+		</div>
+		<ul class="people">
+			<li class="person" ng-class="(activeChat == message?'active':'')"data-chat="person1" ng-repeat="message in messages | filter :  friendName" ng-click="openChat(message);">
+			{{}}
+			<img src="profilePic.png" alt="">
+			<span class="name">{{message.participants[0]!=profile.name?message.participants[0].name:message.participants[1].name}}</span>
+			<span class="time">{{message.messages[0].timestamp_ms | date :'shortTime'}}</span>
+			<span class="preview">{{message.messages[0].content | limitTo:15}}...</span>
+			</li>
+			
+		</ul>
+</div>
+	<div class="right">
+
+
+
+		<div ng-if="showProfile" class="myProfile"> 
+				<img src="{{profile.profile_pic_url}}" style="border-radius: 50%;" alt="profile pic">	
+				<span class="username" style="font-size:40px">{{profile.username}}</span>
+				<div style="margin:15px 10px">
+					<span class="gender">{{profile.gender | uppercase }}</span>
+					<span class="DOB">{{profile.date_of_birth | date : "dd-MMM-yyyy"}}</span>					
+					<span class="biography">{{profile.biography}}</span>
+					
+				</div>				
+		</div>
+
+
+
+
+		<div ng-if="!showProfile" class="top"><span> <span class="name" style="font-size:20px;font-weight:600;">{{activeChat.participants[0]!=profile.name?activeChat.participants[0].name:activeChat.participants[1].name}}</span></span></div>
+		<div ng-if="!showProfile" class="chat active-chat" id="activeWindow" data-chat="person1">
+			
+
+			
+
+			<div ng-repeat="chat in activeChat.messages | orderBy : 'timestamp_ms'">
+				<div class="conversation-start" ng-if="writeDate(chat.timestamp_ms)" >
+					<span>{{chat.timestamp_ms | date : "dd-MMM-yyyy hh:mm a"}}</span>
+				</div>
+				<div class="bubble" ng-class="(chat.sender_name!=profile.name?'you':'me')" ng-mouseover="chat.showTime=true" ng-mouseleave="chat.showTime=false">
+					<span class="story-share" ng-if="chat.story_share">{{chat.story_share}}</span>
+					<p style="margin:0px"></p>
+					<div ng-if="chat.content"class="chat-text">					
+						<span >{{chat.content}}</span>
+					</div>
+					<div ng-if="!chat.content">
+						<div ng-if="chat.share.original_content_owner" class="media-owner">						
+							<img class="media-owner-profile-img" src="profilePic.png" alt="">
+							<span>{{chat.share.original_content_owner}}</span>
+						</div>
+						
+						<div ng-if="chat.reactions" class="media-owner">						
+							<img class="media-owner-profile-img" src="profilePic.png" alt="">
+							<span>{{chat.reactions[0].reaction}}</span>
+						</div>
+						
+						<div class="media-box">
+							<img   ng-if="chat.share.link" src="{{chat.share.link}}" alt="Can't Load Image">
+							<img   ng-if="chat.animated_media_images.preview_gif.url" src="{{chat.animated_media_images.preview_gif.url}}" alt="Can't Load Image">
+							<img   ng-if="chat.photos" src="{{chat.photos[0].uri}}" alt="Can't Load Image">
+							<audio controls ng-if="chat.voice_media">
+							  <source src="{{chat.voice_media}}" type="audio/mp3">
+							Your browser does not support the audio element.
+							</audio>
+						</div>
+						<div ng-if="chat.share.share_text" class="media-box-bottom">{{chat.share.share_text}}</div>
+					</div>
+					<p style="margin:0px;"></p>
+					<small class="chatTime" ng-if="chat.showTime">{{chat.timestamp_ms | date :'shortTime'}}</small>
+				</div>
+			</div>
+
+
+
+
+		</div>
+		
+		
+	
+		
+		
+	<div class="write" style="display:none;">
+		<a href="javascript:;" class="write-link attach"></a>
+		<input type="text">
+		<a href="javascript:;" class="write-link smiley"></a>
+		<a href="javascript:;" class="write-link send"></a>
+	</div>
+</div>
+</div>
+
+</div>
+</div>
+
+
+
+
+</body>
+
+
+
+
+
+
+
+
+</html>
